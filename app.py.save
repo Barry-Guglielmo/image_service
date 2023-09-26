@@ -1,0 +1,35 @@
+import os
+from io import BytesIO
+import requests
+from flask import Flask, abort, send_file, request
+
+from cache import PlotCache
+
+PLOTS_DATABASE = os.path.abspath('plots.db')
+
+app = Flask(__name__)
+state = {}
+
+plot_cache = PlotCache(PLOTS_DATABASE, cdd)
+
+@app.route('/', methods=['GET'])
+def curve():
+    args = request.args.to_dict()
+    vault_id = args['vault']
+    batch_id = args['batch']
+    protocol_id = args['protocol']
+
+    # Bounce unauthorized requests
+    try:
+        session_id = request.cookies.get('JSESSIONID')
+        assert requests.get(ABOUT_ENDPOINT, cookies={'JSESSIONID': session_id}).status_code == 200
+    except AssertionError:
+        abort(401)
+
+    blob = plot_cache.get_or_create(vault_id, batch_id, protocol_id)
+    lock.release()
+
+    return send_file(BytesIO(blob),
+                     mimetype='image/png',
+                     as_attachment=True,
+                     download_name=f'{vault_id}_{batch_id}_{protocol_id}.png')
