@@ -19,9 +19,9 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# @app.route('/')
-# def index():
-#     return render_template('upload.html')
+@app.route('/')
+def index():
+    return render_template('upload.html')
 
 @app.route('/livedesign/images/upload', methods=['POST'])
 def upload_file():
@@ -67,18 +67,20 @@ def serve_image_from_db(first, second, file_name):
     conn.close()
 
     if result:
-        frist, second, file_ame, image_data = result
+        frist, second, file_name, image_data = result
+        print('oh buddy')
+        print(file_name)
         return send_file(
             io.BytesIO(image_data),
-            mimetype='image/jpeg',  # Adjust the mimetype as needed
+            mimetype='image/jpeg',
             as_attachment=False,
-            attachment_filename=file_name
+            download_name=file_name
         )
     else:
         return "Image not found"
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=PORT)
 
 '''
 # Adams Code
