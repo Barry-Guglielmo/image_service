@@ -20,6 +20,6 @@ class PlotCache(object):
             res = cur.fetchone()
             return res[0]
 
-    def put(self, top_folder, middle_folder, bottom_folder, blob):
-       cur.execute(self.INSERT, (top_folder, middle_folder, bottom_folder, blob))
+    def put(self, first, second, file_name, blob):
+       cur.execute(self.INSERT, (first, second, file_name, blob))
        db.commit()

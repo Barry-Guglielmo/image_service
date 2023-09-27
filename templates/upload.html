@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Upload</title>
+</head>
+<body>
+    <h1>Upload an Image</h1>
+    <form method="POST" action="/upload" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg, .jpeg, .png, .gif">
+        <input type="submit" value="Upload">
+    </form>
+
+    <h2>Images from Database:</h2>
+    {% for image in images %}
+        <img src="/dbimage/{{ image[0] }}" alt="{{ image[1] }}" width="32" height="32">
+    {% endfor %}
+</body>
+</html>
