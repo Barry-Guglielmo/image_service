@@ -4,15 +4,13 @@ import io
 import requests
 from threading import Semaphore
 import sqlite3
-from flask import Flask, abort, send_file, request, send_file,render_template
+from flask import Flask, abort, send_file, request, send_file,render_template, make_response
 from config import *
-from cache import PlotCache
 
 
 
 app = Flask(__name__)
 state = {}
-plot_cache = PlotCache(IMAGE_DB)
 
 # Function to check if an allowed file type
 def allowed_file(filename):
@@ -25,6 +23,7 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    print('start at least')
     print(request.files)
     print(request.form)
 
@@ -75,6 +74,24 @@ def serve_image_from_db(first, second, file_name):
         )
     else:
         return "Image not found"
+
+@app.route('/check/<string:first>/<string:second>/<string:file_name>')
+def check_if_image_in__db(first, second, file_name):
+    # Retrieve image data from the IMAGE_DB
+    conn = sqlite3.connect(IMAGE_DB)
+    c = conn.cursor()
+    c.execute("SELECT first, second, file_name, image_data FROM images WHERE (first=? AND second=? AND file_name=?)", (first, second, file_name))
+    result = c.fetchone()
+    conn.close()
+
+    if result:
+        response = make_response('True')
+        response.headers['Content-Type'] = 'text/plain'
+        return response
+    else:
+        response = make_response('False')
+        response.headers['Content-Type'] = 'text/plain'
+        return response
 
 if __name__ == '__main__':
     app.run(debug=True, port=PORT)

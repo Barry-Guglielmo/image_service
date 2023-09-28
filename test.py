@@ -9,7 +9,7 @@ response = requests.post(API_UPLOAD_URL, files=file, data=data )
 print(response)
 
 # Test Getting the Image
-endpoint = '%s/%s/%s/%s'%('http://127.0.0.1:8100/livedesign/images',data['first'],data['second'],'rick.jpeg')
+endpoint = '%s/%s/%s/%s'%(BASE_URL+'/livedesign/images',data['first'],data['second'],'rick.jpeg')
 print(endpoint)
 response = requests.get(endpoint)
 print(response)
