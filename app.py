@@ -12,21 +12,12 @@ from config import *
 app = Flask(__name__)
 state = {}
 
-# Function to check if an allowed file type
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'gif'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 @app.route('/')
 def index():
     return render_template('upload.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    print('start at least')
-    print(request.files)
-    print(request.form)
-
     file = request.files['file']
     form = request.form
     # If the user does not select a file, the browser submits an empty part without filename
@@ -38,7 +29,7 @@ def upload_file():
         return "No second level defined"
 
 
-    if file and allowed_file(file.filename):
+    if file:
         file_name = file.filename
         file_data = sqlite3.Binary(file.read())
         first = request.form['first']
